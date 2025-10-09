@@ -244,10 +244,10 @@ if (pageData && pageData.value) {
 
 // Computed
 const getNextCta = computed(() => {
-  if (!homeData.caseStudies) return;
+  if (!homeData.value) return;
 
-  const current_index = homeData.caseStudies.findIndex(cs => cs.slug === route.params.slug);
-  const next_case_study = current_index < homeData.caseStudies.length - 1 ? homeData.caseStudies[current_index + 1] : homeData.caseStudies[0];
+  const current_index = homeData.value.caseStudies.findIndex(cs => cs.slug === route.params.slug);
+  const next_case_study = current_index < homeData.value.caseStudies.length - 1 ? homeData.value.caseStudies[current_index + 1] : homeData.value.caseStudies[0];
 
   if (current_index < 0) {
     // Doesn't exist in case studies list (deep-linking to one-off project)

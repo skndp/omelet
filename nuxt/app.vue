@@ -32,20 +32,20 @@ const store = useSiteStore();
 const pageToPageLoader = ref(false);
 let pageToPageLoaderTimeout = null;
 
-// router.beforeEach((to, from, next) => {
-//   next();
-// });
-
 router.beforeResolve((to, from, next) => {
-  pageToPageLoaderTimeout = setTimeout(() => {
-    pageToPageLoader.value = true;
-  }, 333); // only show loader if page takes > 333ms
+  if (to.path !== from.path) {
+    pageToPageLoaderTimeout = setTimeout(() => {
+      pageToPageLoader.value = true;
+    }, 333); // loader only appears if page load > 333ms
+  }
   next();
 });
 
 nuxtApp.hook('page:finish', () => {
   clearTimeout(pageToPageLoaderTimeout);
-  pageToPageLoader.value = false;
+  if (pageToPageLoader.value) {
+    pageToPageLoader.value = false;
+  }
 });
 
 const siteQuery = groq`*[(_type == "site")][0]{
