@@ -4,14 +4,14 @@
       <div id="mobile-menu-mask">
         <div id="mobile-menu-content" ref="contentRef">
           <ul class="menu-nav gutter">
-            <li v-for="item in store.site_nav">
+            <li v-for="item in site_nav">
               <NuxtLink class="nav-item nav-a1 --alt" :to="`/?${item.id}`" @click.native="onClickNavItem(item.id)">{{ item.label }}</NuxtLink>
             </li>
           </ul>
           <div class="smiley gutter" />
           <div class="menu-footer">
             <ul>
-              <li v-for="link in store.social_links">
+              <li v-for="link in social_links">
                 <NuxtLink class="icon" :to="link.url" target="_blank" :aria-label="link.label" />
               </li>
             </ul>
@@ -37,10 +37,40 @@ const route = useRoute();
 const store = useSiteStore();
 const contentRef = ref(null);
 
+const site_nav = [
+  { id: 'work', label: 'Work' },
+  { id: 'capabilities', label: 'Capabilities' },
+  { id: 'leadership', label: 'Leadership' }
+]
+
+const siteQuery = groq`*[(_type == "site")][0]{
+  linkedin,
+  instagram
+}`
+
+// Async data
+const uniqKey = 'site-menu';
+const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(siteQuery));
+const site = data.value;
+const social_links = ref([]);
+
 // Mounted
 onMounted(() => {
   if (contentRef.value) {
     disableBodyScroll(contentRef.value);
+  }
+
+  // Build social links based on fields with values...  
+  let arr = [];
+  if (site.linkedin) {
+    arr.push({ 'label': 'Visit our LinkedIn profile', 'url': site.linkedin });
+  }
+  if (site.instagram) {
+    arr.push({ 'label': 'Visit our Instagram account', 'url': site.instagram });
+  }
+
+  if (arr.length > 0) {
+    social_links.value = arr;
   }
 });
 

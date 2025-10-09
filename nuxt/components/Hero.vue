@@ -47,10 +47,24 @@ if (props.media.type !== 'singleImage') {
   video = props.media;
 }
 
+const homeQuery = groq`*[(_type == "home")][0]{
+  caseStudies[]-> {
+    title,
+    'slug': slug.current
+  }
+}`
+
+// Async data
+const uniqKey = 'home-hero';
+const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(homeQuery));
+const home = data.value;
+
 // Computed
 const getPrevSlug = computed(() => {
-  const current_index = store.case_studies.findIndex(cs => cs.slug === route.params.slug);
-  const prev_slug = current_index > 0 ? store.case_studies[current_index - 1].slug : store.case_studies[store.case_studies.length - 1 ].slug;
+  if (!home.caseStudies) return;
+
+  const current_index = home.caseStudies.findIndex(cs => cs.slug === route.params.slug);
+  const prev_slug = current_index > 0 ? home.caseStudies[current_index - 1].slug : home.caseStudies[home.caseStudies.length - 1 ].slug;
 
   if (current_index < 0) {
     // Doesn't exist in case studies list (deep-linking to one-off project)
@@ -61,8 +75,10 @@ const getPrevSlug = computed(() => {
 });
 
 const getNextSlug = computed(() => {
-  const current_index = store.case_studies.findIndex(cs => cs.slug === route.params.slug);
-  const next_slug = current_index < store.case_studies.length - 1 ? store.case_studies[current_index + 1].slug : store.case_studies[0].slug;
+  if (!home.caseStudies) return;
+
+  const current_index = home.caseStudies.findIndex(cs => cs.slug === route.params.slug);
+  const next_slug = current_index < home.caseStudies.length - 1 ? home.caseStudies[current_index + 1].slug : home.caseStudies[0].slug;
 
   if (current_index < 0) {
     // Doesn't exist in case studies list (deep-linking to one-off project)

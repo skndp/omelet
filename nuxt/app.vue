@@ -3,6 +3,9 @@
     <transition name="loading" :duration="2100">
       <Loader v-if="store.loading" />
     </transition>
+    <Transition name="p2p-loading">
+      <PageToPageLoader v-if="pageToPageLoader" />
+    </Transition>
     <DevOnly>
       <GridOverlay />
     </DevOnly>
@@ -18,18 +21,47 @@
 </template>
 
 <script setup>
+import { useNuxtApp } from '#app';
+import { useRouter } from 'vue-router';
 import { useSiteStore } from '~/stores/store';
 
+const nuxtApp = useNuxtApp();
+const router = useRouter();
 const store = useSiteStore();
 
-// Composables
-useSeoMeta({
-  title: store.site_name,
-  ogTitle: store.site_name,
-  description: store.site_seo_description,
-  ogDescription: store.site_seo_description,
-  ogImage: store.site_seo_image
-})
+const pageToPageLoader = ref(false);
+let pageToPageLoaderTimeout = null;
+
+// router.beforeEach((to, from, next) => {
+//   next();
+// });
+
+router.beforeResolve((to, from, next) => {
+  pageToPageLoaderTimeout = setTimeout(() => {
+    pageToPageLoader.value = true;
+  }, 333); // only show loader if page takes > 333ms
+  next();
+});
+
+nuxtApp.hook('page:finish', () => {
+  clearTimeout(pageToPageLoaderTimeout);
+  pageToPageLoader.value = false;
+});
+
+const siteQuery = groq`*[(_type == "site")][0]{
+  siteName,
+  seoSocial {
+    description,
+    'image': image.asset->url
+  }
+}`
+
+// Async data
+const uniqKey = 'site-app';
+const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(siteQuery));
+const site = data.value;
+
+store.setGlobalSeo(site);
 
 // Mounted
 onMounted(() => {

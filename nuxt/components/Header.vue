@@ -13,7 +13,7 @@
         </button>
       </nav>
       <nav id="primary-nav">
-        <NuxtLink v-for="item in store.site_nav" class="nav-item nav-a1" :to="`/?${item.id}`" @click.native="onClickNavItem(item.id)">{{ item.label }}</NuxtLink>
+        <NuxtLink v-for="item in site_nav" class="nav-item nav-a1" :to="`/?${item.id}`" @click.native="onClickNavItem(item.id)">{{ item.label }}</NuxtLink>
         <NuxtLink class="icon --contact" to="/?contact" @click.native="onClickNavItem('contact')" aria-label="Contact" />
         <button class="icon --accessibility marg-r" :class="{'--enabled': store.accessibility}" aria-label="Accessibility" @click="onClickAccessibility" />
       </nav>
@@ -37,20 +37,37 @@ const state = reactive({
   scrolling_cb: false,
   loading_cb: false
 });
-const header_title = ref(store.header_title);
+
+const site_nav = [
+  { id: 'work', label: 'Work' },
+  { id: 'capabilities', label: 'Capabilities' },
+  { id: 'leadership', label: 'Leadership' }
+]
+
+const siteQuery = groq`*[(_type == "site")][0]{
+  headerTitle
+}`
+
+// Async data
+const uniqKey = 'site-header';
+const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(siteQuery));
+const site = data.value;
 
 // Computed
 const getTitleLines = computed(() => {
-  const lines = header_title.value.split('\n');
   let html = '';
-  lines.forEach((line, index) => {
-    let br = index < lines.length - 1 ? '\n' : '';
-    if (index === 0) {
-      html += `<strong>${line}</strong>${br}`;
-    } else {
-      html += `${line}${br}`;
-    }
-  });
+
+  if (site.headerTitle) {
+    const lines = site.headerTitle.split('\n');
+    lines.forEach((line, index) => {
+      let br = index < lines.length - 1 ? '\n' : '';
+      if (index === 0) {
+        html += `<strong>${line}</strong>${br}`;
+      } else {
+        html += `${line}${br}`;
+      }
+    });
+  }
 
   return html;
 });

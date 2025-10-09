@@ -4,39 +4,39 @@
       <div class="shape">
         <div class="inner">
           <div class="content">
-            <img inert src="/images/contact-shape.svg" :alt="store.footer_handwriting" />
+            <img :src="`/images/contact-shape.svg`" :alt="site.handwriting" />
             <p class="fs-t2 pre" v-html="formatLines" />
           </div>
         </div>
       </div>
       <div id="contact-section" class="contact-info">
-        <h4>{{ store.footer_title }}</h4>
+        <h4>{{ site.footerTitle }}</h4>
         <div class="cols">
           <div class="col">
             <div class="email-block">
-              <p class="fs-p4">{{ store.general_label }}</p>
+              <p class="fs-p4">{{ site.generalLabel }}</p>
               <div class="row">
-                <NuxtLink class="fs-p2 underline" :to="`mailto:${store.general_email}`" target="_blank">{{ store.general_email }}</NuxtLink>
-                <NuxtLink class="icon" :to="store.social_links[0].url" target="_blank" :aria-label="store.social_links[0].label" />
+                <NuxtLink class="fs-p2 underline" :to="`mailto:${site.generalEmail}`" target="_blank">{{ site.generalEmail }}</NuxtLink>
+                <NuxtLink v-if="social_links[0]" class="icon" :to="social_links[0].url" target="_blank" :aria-label="social_links[0].label" />
               </div>
             </div>
             <div class="email-block">
-              <p class="fs-p4">{{ store.business_label }}</p>
+              <p class="fs-p4">{{ site.businessLabel }}</p>
               <div class="row">
-                <NuxtLink class="fs-p2 underline" :to="`mailto:${store.business_email}`" target="_blank">{{ store.business_email }}</NuxtLink>
-                <NuxtLink class="icon" :to="store.social_links[1].url" target="_blank" :aria-label="store.social_links[1].label" />
+                <NuxtLink class="fs-p2 underline" :to="`mailto:${site.businessEmail}`" target="_blank">{{ site.businessEmail }}</NuxtLink>
+                <NuxtLink v-if="social_links[1]" class="icon" :to="social_links[1].url" target="_blank" :aria-label="social_links[1].label" />
               </div>
             </div>
-            <NuxtLink class="col-icon" :to="store.social_links[0].url" target="_blank" :aria-label="store.social_links[0].label" />
+            <NuxtLink v-if="social_links[0]" class="col-icon" :to="social_links[0].url" target="_blank" :aria-label="social_links[0].label" />
           </div>
           <div class="col">
             <div class="block">
-              <NuxtLink class="pre" :to="`${store.address_link}`" target="_blank">{{ store.address }}</NuxtLink>
+              <NuxtLink class="pre" :to="`${site.addressLink}`" target="_blank">{{ site.address }}</NuxtLink>
             </div>
             <div class="block">
-              <NuxtLink class="underline" :to="`tel:${store.phone_number}`" target="_blank">{{ store.phone_number }}</NuxtLink>
+              <NuxtLink class="underline" :to="`tel:${site.phoneNumber}`" target="_blank">{{ site.phoneNumber }}</NuxtLink>
             </div>
-            <NuxtLink class="col-icon" :to="store.social_links[1].url" target="_blank" :aria-label="store.social_links[1].label" />
+            <NuxtLink v-if="social_links[1]" class="col-icon" :to="social_links[1].url" target="_blank" :aria-label="social_links[1].label" />
           </div>
         </div>
       </div>
@@ -51,23 +51,59 @@
 </template>
 
 <script setup>
-import { useSiteStore } from '~/stores/store';
 import { smoothScrollTo } from '~/utils/smooth-scroll-to';
 
 const route = useRoute();
-const store = useSiteStore();
-const year = new Date().getFullYear();
+
+const siteQuery = groq`*[(_type == "site")][0]{
+  footerTitle,
+  generalLabel,
+  businessLabel,
+  handwriting,
+  generalEmail,
+  businessEmail,
+  address,
+  addressLink,
+  phoneNumber,
+  linkedin,
+  instagram
+}`
+
+// Async data
+const uniqKey = 'site-footer';
+const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(siteQuery));
+const site = data.value;
+const social_links = ref([]);
 
 // Computed
 const formatLines = computed(() => {
-  const lines = store.footer_handwriting.split('\n');
   let html = '';
-  lines.forEach((line, index) => {
-    html += `<span>${line}</span>`;
-  });
+
+  if (site.handwriting) {
+    const lines = site.handwriting.split('\n');
+    lines.forEach((line, index) => {
+      html += `<span>${line}</span>`;
+    });
+  }
 
   return html;
 });
+
+// Mounted
+onMounted(() => {
+  // Build social links based on fields with values...
+  let arr = [];
+  if (site.linkedin) {
+    arr.push({ 'label': 'Visit our LinkedIn profile', 'url': site.linkedin });
+  }
+  if (site.instagram) {
+    arr.push({ 'label': 'Visit our Instagram account', 'url': site.instagram });
+  }
+
+  if (arr.length > 0) {
+    social_links.value = arr;
+  }
+})
 
 // Methods
 function onClickLogo() {

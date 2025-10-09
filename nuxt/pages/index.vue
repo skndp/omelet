@@ -78,6 +78,15 @@ const homeQuery = groq`*[(_type == "home")][0]{
 }`;
 const pageData = await useSanityData({ query: homeQuery });
 
+useSeoMeta({
+  title: store.siteTitle,
+  ogTitle: store.siteTitle,
+  description: store.siteDescription,
+  ogDescription: store.siteDescription,
+  ogImage: store.ogImage,
+  ogUrl: store.ogUrl
+})
+
 // Page transitions
 definePageMeta({
   pageTransition: {

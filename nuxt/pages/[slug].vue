@@ -70,7 +70,8 @@ import { useSiteStore } from '~/stores/store';
 const route = useRoute();
 const router = useRouter();
 const store = useSiteStore();
-const params = { slug: route.params.slug };
+const { client } = useSanity();
+
 const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
   title,
   slug,
@@ -180,7 +181,33 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
     },
   }
 }`;
-const pageData = await useSanityData({ query: pageQuery, params: params });
+const homeQuery = groq`*[(_type == "home")][0]{
+  caseStudies[]-> {
+    title,
+    'slug': slug.current
+  }
+}`
+
+// Async data
+const uniqKey = `home-and-cs-${route.params.slug}`;
+const { data } = await useAsyncData(uniqKey,
+  async () => {
+    const page = await client.fetch(pageQuery, { slug: route.params.slug });
+    if (!page) {
+      throw createError({
+        statusCode: 404
+      });
+    }
+
+    // Got page? Great, route exists. Now get home query...
+    const home = await client.fetch(homeQuery);
+
+    return { page, home };
+  }
+);
+
+const pageData = computed(() => data.value?.page);
+const homeData = computed(() => data.value?.home);
 
 // Page transitions...
 // Define a default name and mode...
@@ -192,11 +219,11 @@ definePageMeta({
 });
 
 if (pageData && pageData.value) {
-  const seo_title = `${pageData.value.title} | ${store.site_name}`;
-  const seo_description = pageData.value.subtitle ? pageData.value.subtitle : store.site_seo_description;
+  const seo_title = `${pageData.value.title} | ${store.siteName}`;
+  const seo_description = pageData.value.subtitle ? pageData.value.subtitle : store.siteDescription;
   const hero_media = pageData.value.heroMedia[0];
   const seo_url = `https://www.omelet.com/${route.params.slug}`;
-  let seo_image = store.site_seo_image;
+  let seo_image = store.ogImage;
 
   if (hero_media.type !== 'singleImage') {
     seo_image = hero_media.vimeo.pictures.base_link.replace('?r=pad', '') + '_1920?r=rpad';
@@ -217,8 +244,10 @@ if (pageData && pageData.value) {
 
 // Computed
 const getNextCta = computed(() => {
-  const current_index = store.case_studies.findIndex(cs => cs.slug === route.params.slug);
-  const next_case_study = current_index < store.case_studies.length - 1 ? store.case_studies[current_index + 1] : store.case_studies[0];
+  if (!homeData.caseStudies) return;
+
+  const current_index = homeData.caseStudies.findIndex(cs => cs.slug === route.params.slug);
+  const next_case_study = current_index < homeData.caseStudies.length - 1 ? homeData.caseStudies[current_index + 1] : homeData.caseStudies[0];
 
   if (current_index < 0) {
     // Doesn't exist in case studies list (deep-linking to one-off project)
@@ -230,24 +259,32 @@ const getNextCta = computed(() => {
 
 // Now check to and from names to determine directional page transitions...
 let beforeEachExecuted = false;
+
 router.beforeEach(async (to, from) => {
   const from_name = from.name;
   const to_name = to.name;
 
-  // Going page-to-page, not just first time landing on page...
-  if (from_name && to_name && from_name && !beforeEachExecuted) {
-    let direction = 'slide-left';
-    beforeEachExecuted = true;
+  // Only run this if we haven't executed the beforeEach logic already
+  if (from_name && to_name && !beforeEachExecuted) {
+    // Wait for the async data to be available
+    await data; // This ensures that the data is fetched before proceeding
 
-    // Home Page to Case Study...
+    let direction = 'slide-left';
+
+    // Once the data is available, run the transition logic
     if (from_name === 'index' && to_name === 'slug') {
       direction = 'slide-left';
     }
     // Case Study to Case Study
-    if (from_name === 'slug' && to_name === 'slug') {
-      const from_index = store.case_studies.findIndex(cs => cs.slug === from.params.slug);
-      const to_index = store.case_studies.findIndex(cs => cs.slug === to.params.slug);
-      const last_index = store.case_studies.length - 1;
+    else if (from_name === 'slug' && to_name === 'slug') {
+      // Ensure homeData is available before proceeding
+      if (!homeData.value?.caseStudies) {
+        return; // Prevent logic from executing if homeData is still undefined or loading
+      }
+
+      const from_index = homeData.value.caseStudies.findIndex(cs => cs.slug === from.params.slug);
+      const to_index = homeData.value.caseStudies.findIndex(cs => cs.slug === to.params.slug);
+      const last_index = homeData.value.caseStudies.length - 1;
 
       if (to_index === 0 && from_index === last_index) {
         direction = 'slide-left';
@@ -259,8 +296,8 @@ router.beforeEach(async (to, from) => {
         }
       }
     }
-    // Case Study to Home Page...
-    if (from_name === 'slug' && to_name === 'index') {
+    // Case Study to Home Page
+    else if (from_name === 'slug' && to_name === 'index') {
       direction = 'slide-right';
     }
 
@@ -271,6 +308,8 @@ router.beforeEach(async (to, from) => {
     to.meta.pageTransition.name = direction;
     from.meta.pageTransition.name = direction;
     store.setPageMaskName(direction);
+
+    beforeEachExecuted = true;
   }
 });
 

@@ -2,7 +2,7 @@
   <section class="up-next-section pad-bl">
     <div class="gutter">
       <NuxtLink class="up-next-cta pad-t pad-b" :to="`/${cta.slug}`">
-        <img src="/images/next-arrows.png" :alt="`Next Case Study - ${cta.title}`" />
+        <img :src="`/images/next-arrows.png`" :alt="`Next Case Study - ${cta.title}`" />
         <h2 class="pre">{{ cta.title }}</h2>
         <p class="fs-p1">Next</p>
       </NuxtLink>
