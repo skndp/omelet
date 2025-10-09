@@ -4,7 +4,7 @@
       <div class="shape">
         <div class="inner">
           <div class="content">
-            <img :src="`/images/contact-shape.svg`" :alt="site.handwriting" />
+            <img inert :src="`/images/contact-shape.svg`" :alt="site.handwriting" />
             <p class="fs-t2 pre" v-html="formatLines" />
           </div>
         </div>
