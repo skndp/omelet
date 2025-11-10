@@ -8,6 +8,7 @@
         :media="pageData.heroMedia[0]"
       />
       <BuilderTextBlock
+        alignment="left"
         :headline="pageData.overview.headline"
         :richtext="pageData.overview.richtext"
         :tags="pageData.tags"
@@ -15,6 +16,7 @@
       <template v-for="(block, index) in pageData.blocks">
         <BuilderTextBlock
           v-if="block.type === 'textBlock'"
+          :alignment="block.alignment"
           :headline="block.headline"
           :richtext="block.richtext"
         />
@@ -96,6 +98,7 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
   blocks[] {
     _type == 'textBlock' => {
       'type': _type,
+      alignment,
       headline,
       richtext
     },
