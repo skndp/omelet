@@ -33,9 +33,6 @@ export default defineType({
     defineField({
       name: 'richtext',
       title: 'Copy',
-      validation: [
-        Rule => Rule.required()
-      ],
       type: 'array',
       of: [{
         type: 'block',

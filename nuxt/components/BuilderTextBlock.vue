@@ -113,12 +113,12 @@ const props = defineProps({
           margin: 0 auto;
 
           &:not(:first-child) {
-            margin-top: $space-l;
+            margin-top: $space-xl;
           }
 
           .fs-p1:only-child {
             position: relative;
-            padding-bottom: $space-l;
+            padding-bottom: $space-xl;
 
             &:after {
               content: "";
