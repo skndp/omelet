@@ -28,7 +28,15 @@ export default defineType({
       title: 'Headline',
       type: 'text',
       rows: 2,
-      description: 'A headline with align: left will automatically split this text block into 2 columns. A headline with align: center will stack with a horizontal rule underneath.'
+      description: 'A headline with align: left will automatically split this text block into 2 columns. A headline with align: center will stack.'
+    }),
+    defineField({
+      name: 'rule',
+      title: 'Horizontal Rule',
+      description: 'Add a horizontal rule under the title?',
+      type: 'boolean',
+      initialValue: false,
+      hidden: ({ parent }) => parent?.alignment !== "center",
     }),
     defineField({
       name: 'richtext',

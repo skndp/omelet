@@ -18,6 +18,7 @@
           v-if="block.type === 'textBlock'"
           :alignment="block.alignment"
           :headline="block.headline"
+          :rule="block.rule"
           :richtext="block.richtext"
         />
         <BuilderPullQuote
@@ -100,6 +101,7 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
       'type': _type,
       alignment,
       headline,
+      rule,
       richtext
     },
     _type == 'pullQuote' => {

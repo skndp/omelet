@@ -1,5 +1,5 @@
 <template>
-  <section class="builder-text-block pad-bl" :class="alignment">
+  <section class="builder-text-block pad-bl" :class="[alignment, {'rule': rule}]">
     <div class="cols gutter-lg">
       <div v-if="headline" class="col">
         <p class="fs-p1">{{ headline }}</p>
@@ -22,6 +22,10 @@ const props = defineProps({
   },
   headline: {
     type: String
+  },
+  rule: {
+    type: Boolean,
+    default: false
   },
   richtext: {
     type: Array
@@ -115,8 +119,14 @@ const props = defineProps({
           &:not(:first-child) {
             margin-top: $space-xl;
           }
+        }
+      }
+    }
 
-          .fs-p1:only-child {
+    &.center.rule {
+      .cols {
+        .col {
+          .fs-p1 {
             position: relative;
             padding-bottom: $space-xl;
 
