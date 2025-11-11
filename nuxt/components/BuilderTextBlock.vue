@@ -1,5 +1,5 @@
 <template>
-  <section class="builder-text-block pad-bl">
+  <section class="builder-text-block pad-bl" :class="[alignment, {'rule': rule}]">
     <div class="cols gutter-lg">
       <div v-if="headline" class="col">
         <p class="fs-p1">{{ headline }}</p>
@@ -16,8 +16,16 @@
 
 <script setup>
 const props = defineProps({
+  alignment: {
+    type: String,
+    default: 'left'
+  },
   headline: {
     type: String
+  },
+  rule: {
+    type: Boolean,
+    default: false
   },
   richtext: {
     type: Array
@@ -30,6 +38,19 @@ const props = defineProps({
 
 <style lang='scss'>
 .builder-text-block {
+  &.center {
+    .cols {
+      .col {
+        text-align: center;
+
+        .tags {
+          max-width: unset;
+          justify-content: center;
+        }
+      }
+    }
+  }
+
   .cols {
     .col {
       &:not(:first-child) {
@@ -89,23 +110,60 @@ const props = defineProps({
   }
 
   @include respond-to($tablet) {
-    .cols {
-      display: flex;
-      justify-content: space-between;
-
-      .col {
-        width: span(6);
-
-        &:not(:last-child) {
-          width: span(5);
-        }
-
-        &:not(:first-child) {
-          margin-top: 0px;
-        }
-
-        &:only-child {
+    &.center {
+      .cols {
+        .col {
+          width: span(10);
           margin: 0 auto;
+
+          &:not(:first-child) {
+            margin-top: $space-xl;
+          }
+        }
+      }
+    }
+
+    &.center.rule {
+      .cols {
+        .col {
+          .fs-p1 {
+            position: relative;
+            padding-bottom: $space-xl;
+
+            &:after {
+              content: "";
+              position: absolute;
+              bottom: 0px;
+              left: 50%;
+              width: 20%;
+              height: 1px;
+              background-color: $black;
+              transform: translate(-50%, 0%);
+            }
+          }
+        }
+      }
+    }
+
+    &.left {
+      .cols {
+        display: flex;
+        justify-content: space-between;
+
+        .col {
+          width: span(6);
+
+          &:not(:last-child) {
+            width: span(5);
+          }
+
+          &:not(:first-child) {
+            margin-top: 0px;
+          }
+
+          &:only-child {
+            margin: 0 auto;
+          }
         }
       }
     }

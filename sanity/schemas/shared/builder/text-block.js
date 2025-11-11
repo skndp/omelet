@@ -9,18 +9,38 @@ export default defineType({
   icon: TextIcon,
   fields: [
     defineField({
+      name: 'alignment',
+      title: 'Alignment',
+      type: 'string',
+      description: 'Left = narrower, left-align text. Center = wider, centered text.',
+      options: {
+        list: [
+          { title: "Left", value: "left" },
+          { title: "Center", value: "center" }
+        ],
+        layout: "radio",
+        direction: "horizontal"
+      },
+      initialValue: 'left'
+    }),
+    defineField({
       name: 'headline',
       title: 'Headline',
       type: 'text',
       rows: 2,
-      description: 'Enter a Headline to automatically split this text block into 2 columns. Otherwise, just fill out the copy field and this will be centered.'
+      description: 'A headline with align: left will automatically split this text block into 2 columns. A headline with align: center will stack.'
+    }),
+    defineField({
+      name: 'rule',
+      title: 'Horizontal Rule',
+      description: 'Add a horizontal rule under the title?',
+      type: 'boolean',
+      initialValue: false,
+      hidden: ({ parent }) => parent?.alignment !== "center",
     }),
     defineField({
       name: 'richtext',
       title: 'Copy',
-      validation: [
-        Rule => Rule.required()
-      ],
       type: 'array',
       of: [{
         type: 'block',

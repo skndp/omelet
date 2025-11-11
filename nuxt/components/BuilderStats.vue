@@ -2,8 +2,8 @@
   <section class="builder-stats pad-bl">
     <div class="cols gutter">
       <div v-for="(item, index) in stats" class="col">
-        <p class="fs-p1">{{ item.title }}</p>
-        <p class="fs-p3">{{ item.copy }}</p>
+        <p class="stat">{{ item.title }}</p>
+        <RichTextContent :content="item.copy" />
       </div>
     </div>
   </section>
