@@ -3,7 +3,9 @@
     <div class="cols gutter">
       <div v-for="(item, index) in stats" class="col">
         <p class="fs-p1">{{ item.title }}</p>
-        <p class="fs-p3">{{ item.copy }}</p>
+        <p class="fs-p3">
+          <RichTextContent :content="item.copy" />
+        </p>
       </div>
     </div>
   </section>

@@ -33,10 +33,23 @@ export default defineType({
             defineField({
               name: 'copy',
               title: 'Copy',
-              type: 'string',
               validation: [
-                Rule => Rule.required()
-              ]
+                Rule => Rule.required(),
+                Rule => Rule.max(1).error('Only one paragraph is allowed.')
+              ],
+              type: 'array',
+              of: [{
+                type: 'block',
+                styles: [],
+                lists: [],
+                marks: {
+                  decorators: [
+                    { title: 'Bold', value: 'strong' },
+                    { title: 'Italic', value: 'em' }
+                  ],
+                  annotations: []
+                }
+              }]
             })
           ],
           preview: {
