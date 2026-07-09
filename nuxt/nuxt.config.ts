@@ -1,5 +1,8 @@
 const site_name = 'Omelet';
-const site_url = 'https://omelet.com'
+const site_url = 'https://omelet.com';
+const sanity_project_id = process.env.NUXT_SANITY_PROJECT_ID;
+const sanity_dataset = process.env.NUXT_SANITY_DATASET || 'production';
+const sanity_api_version = process.env.NUXT_SANITY_API_VERSION || '2022-03-07';
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
@@ -12,7 +15,11 @@ export default defineNuxtConfig({
   //
   runtimeConfig: {
     public: {
-      isDev: process.env.NODE_ENV === 'development'
+      isDev: process.env.NODE_ENV === 'development',
+      siteUrl: site_url,
+      sanityProjectId: sanity_project_id,
+      sanityDataset: sanity_dataset,
+      sanityApiVersion: sanity_api_version
     }
   },
   //
@@ -101,7 +108,8 @@ export default defineNuxtConfig({
     '@nuxtjs/sanity',
     '@nuxtjs/sitemap',
     '@pinia/nuxt',
-    'nuxt-gtag'
+    'nuxt-gtag',
+    './modules/sanity-routes.js'
   ],
   //
   // Gtag
@@ -114,16 +122,16 @@ export default defineNuxtConfig({
   // Sanity
   //
   sanity: {
-    projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-    dataset: 'production',
-    apiVersion: '2022-03-07',
+    projectId: sanity_project_id,
+    dataset: sanity_dataset,
+    apiVersion: sanity_api_version,
     useCdn: false,
     minimal: false,
     additionalClients: {
       preview: {
-        projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-        dataset: 'production',
-        apiVersion: '2022-03-07',
+        projectId: sanity_project_id,
+        dataset: sanity_dataset,
+        apiVersion: sanity_api_version,
         useCdn: false,
         perspective: 'previewDrafts',
         withCredentials: true

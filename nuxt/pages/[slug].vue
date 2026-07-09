@@ -79,6 +79,11 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
   title,
   slug,
   subtitle,
+  seoSocial {
+    title,
+    description,
+    image ${imageProps}
+  },
   heroMedia[] {
     _type == 'singleImage' => {
       'type': _type,
@@ -213,6 +218,9 @@ const { data } = await useAsyncData(uniqKey,
 
 const pageData = computed(() => data.value?.page);
 const homeData = computed(() => data.value?.home);
+const pageSeo = computed(() => pageData.value?.seoSocial || null);
+const seo = await useSeoDefaults();
+const canonicalUrl = useCanonicalUrl();
 
 // Page transitions...
 // Define a default name and mode...
@@ -223,29 +231,38 @@ definePageMeta({
   }
 });
 
-if (pageData && pageData.value) {
-  const seo_title = `${pageData.value.title} | ${store.siteName}`;
-  const seo_description = pageData.value.subtitle ? pageData.value.subtitle : store.siteDescription;
-  const hero_media = pageData.value.heroMedia[0];
-  const seo_url = `https://www.omelet.com/${route.params.slug}`;
-  let seo_image = store.ogImage;
+const pageTitle = formatSeoTitle(pageSeo.value?.title || pageData.value?.title || seo.siteTitle, seo.siteName);
+const pageDescription = pageSeo.value?.description || pageData.value?.subtitle || seo.siteDescription;
+const heroMedia = pageData.value?.heroMedia?.[0];
+let pageImage = pageSeo.value?.image?.src || seo.ogImage;
 
-  if (hero_media.type !== 'singleImage') {
-    seo_image = hero_media.vimeo.pictures.base_link.replace('?r=pad', '') + '_1920?r=rpad';
-  } else {
-    seo_image = hero_media.image.src;
+if (!pageSeo.value?.image?.src && heroMedia) {
+  if (heroMedia.type === 'singleImage') {
+    pageImage = heroMedia.image.src;
+  } else if (heroMedia.vimeo?.pictures?.base_link) {
+    pageImage = heroMedia.vimeo.pictures.base_link.replace('?r=pad', '') + '_1200?r=rpad';
   }
-
-  // Composables
-  useSeoMeta({
-    title: seo_title,
-    ogTitle: seo_title,
-    description: seo_description,
-    ogDescription: seo_description,
-    ogImage: seo_image,
-    ogUrl: seo_url
-  })
 }
+
+useSeoMeta({
+  title: pageTitle,
+  ogTitle: pageTitle,
+  ogSiteName: seo.siteName,
+  description: pageDescription,
+  ogDescription: pageDescription,
+  ogImage: pageImage,
+  ogUrl: canonicalUrl
+});
+
+useHead({
+  link: [
+    {
+      key: 'canonical',
+      rel: 'canonical',
+      href: canonicalUrl
+    }
+  ]
+});
 
 // Computed
 const getNextCta = computed(() => {

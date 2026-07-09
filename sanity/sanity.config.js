@@ -61,7 +61,7 @@ export default defineConfig({
   name: 'default',
   title: 'Omelet',
   projectId: process.env.SANITY_STUDIO_PROJECT_ID,
-  dataset: 'production',
+  dataset: process.env.SANITY_STUDIO_DATASET || 'production',
   document: {
     comments: {
       enabled: false

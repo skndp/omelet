@@ -55,11 +55,11 @@ export const useSiteStore = defineStore('site', {
       this.dark_mode = false;
     },
     setGlobalSeo(settings) {
-      this.siteName = settings.siteName;
-      this.siteTitle = settings.siteName;
-      this.siteDescription = settings.seoSocial.description;
-      this.ogImage = settings.seoSocial.image;
-      this.ogUrl = 'https://www.omelet.com';
+      this.siteName = settings.siteName || '';
+      this.siteTitle = settings.siteTitle || settings.siteName || '';
+      this.siteDescription = settings.siteDescription || '';
+      this.ogImage = settings.ogImage || '';
+      this.ogUrl = settings.siteUrl || '';
     }
   }
 })

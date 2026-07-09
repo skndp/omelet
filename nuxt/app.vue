@@ -47,21 +47,21 @@ nuxtApp.hook('page:finish', () => {
     pageToPageLoader.value = false;
   }
 });
+const seo = await useSeoDefaults();
+const canonicalUrl = useCanonicalUrl();
 
-const siteQuery = groq`*[(_type == "site")][0]{
-  siteName,
-  seoSocial {
-    description,
-    'image': image.asset->url
-  }
-}`
+store.setGlobalSeo(seo);
 
-// Async data
-const uniqKey = 'site-app';
-const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(siteQuery));
-const site = data.value;
-
-store.setGlobalSeo(site);
+useSeoMeta(seo.meta);
+useHead({
+  link: [
+    {
+      key: 'canonical',
+      rel: 'canonical',
+      href: canonicalUrl
+    }
+  ]
+});
 
 // Mounted
 onMounted(() => {

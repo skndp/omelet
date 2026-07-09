@@ -9,6 +9,17 @@ export default defineType({
   title: 'Case Study',
   type: 'document',
   icon: ProjectsIcon,
+  groups: [
+    {
+      name: 'content',
+      title: 'Content',
+      default: true
+    },
+    {
+      name: 'seo',
+      title: 'SEO'
+    }
+  ],
   fieldsets: [
     {
       name: 'hero',
@@ -25,6 +36,7 @@ export default defineType({
   ],
   fields: [
     defineField({
+      group: 'content',
       fieldset: 'hero',
       name: 'title',
       title: 'Title',
@@ -36,6 +48,7 @@ export default defineType({
       ]
     }),
     defineField({
+      group: 'content',
       fieldset: 'hero',
       name: 'slug',
       title: 'Slug',
@@ -61,6 +74,7 @@ export default defineType({
       ]
     }),
     defineField({
+      group: 'content',
       fieldset: 'hero',
       name: 'subtitle',
       title: 'Subtitle',
@@ -70,6 +84,7 @@ export default defineType({
       // ]
     }),
     defineField({
+      group: 'content',
       fieldset: 'hero',
       name: 'heroMedia',
       title: 'Hero (Image or Video)',
@@ -87,6 +102,7 @@ export default defineType({
       ]
     }),
     defineField({
+      group: 'content',
       fieldset: 'work',
       options: { columns: 2 },
       name: 'ctaTags',
@@ -118,6 +134,7 @@ export default defineType({
       ]
     }),
     defineField({
+      group: 'content',
       fieldset: 'overview',
       name: 'overview',
       title: 'Text Block',
@@ -174,6 +191,7 @@ export default defineType({
       ]
     }),
     defineField({
+      group: 'content',
       fieldset: 'overview',
       name: 'tags',
       title: 'Tags',
@@ -189,6 +207,7 @@ export default defineType({
       ]
     }),
     defineField({
+      group: 'content',
       name: 'blocks',
       title: 'Builder Blocks',
       type: 'array',
@@ -221,6 +240,13 @@ export default defineType({
           type: 'stats'
         }
       ]
+    }),
+    defineField({
+      group: 'seo',
+      name: 'seoSocial',
+      title: 'SEO / Social Sharing',
+      type: 'seoSocial',
+      description: 'Optional overrides for search engines and social sharing previews.'
     })
   ],
   preview: {
