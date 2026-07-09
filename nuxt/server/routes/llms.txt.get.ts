@@ -1,4 +1,5 @@
 import { setHeader } from 'h3';
+import { createClient } from '@sanity/client';
 
 const SITE_FALLBACK_NAME = 'Omelet';
 const SITE_FALLBACK_DESCRIPTION = 'Omelet is an independent creative agency in Los Angeles that helps brands thrive through integrated campaigns, brand strategy, and original content.';
@@ -41,7 +42,12 @@ function buildCaseStudyLine(siteUrl, caseStudy) {
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
   const siteUrl = runtimeConfig.public.siteUrl || 'https://omelet.com';
-  const { client } = useOmeletSanityClient();
+  const client = createClient({
+    projectId: runtimeConfig.public.sanityProjectId,
+    dataset: runtimeConfig.public.sanityDataset || 'production',
+    apiVersion: runtimeConfig.public.sanityApiVersion || '2022-03-07',
+    useCdn: false
+  });
   const data = await client.fetch(LLMS_QUERY);
 
   const siteName = data?.site?.siteName || SITE_FALLBACK_NAME;

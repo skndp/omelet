@@ -30,7 +30,8 @@ export default defineNuxtModule({
 
       const routes = new Set([
         ...(nitroConfig.prerender.routes || []),
-        '/'
+        '/',
+        '/llms.txt'
       ]);
 
       if (!projectId || !dataset) {
