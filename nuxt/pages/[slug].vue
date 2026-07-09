@@ -231,7 +231,7 @@ definePageMeta({
   }
 });
 
-const pageTitle = formatSeoTitle(pageSeo.value?.title || pageData.value?.title || seo.siteTitle, seo.siteName);
+const pageTitle = pageSeo.value?.title || formatSeoTitle(pageData.value?.title || seo.siteName, seo.siteName);
 const pageDescription = pageSeo.value?.description || pageData.value?.subtitle || seo.siteDescription;
 const heroMedia = pageData.value?.heroMedia?.[0];
 let pageImage = pageSeo.value?.image?.src || seo.ogImage;

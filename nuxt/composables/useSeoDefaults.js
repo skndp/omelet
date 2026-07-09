@@ -40,19 +40,20 @@ export async function useSeoDefaults() {
   const { data } = await useAsyncData('seo-defaults', () => client.fetch(SEO_DEFAULTS_QUERY));
 
   const siteName = data.value?.siteName || SITE_NAME;
-  const siteTitle = data.value?.seoSocial?.title || siteName;
+  const homeTitle = data.value?.seoSocial?.title || siteName;
   const siteDescription = data.value?.seoSocial?.description || '';
   const ogImage = formatOgImage(data.value?.seoSocial?.image?.src, fallbackOgImage);
 
   return {
     siteName,
-    siteTitle,
+    siteTitle: homeTitle,
+    homeTitle,
     siteDescription,
     ogImage,
     siteUrl,
     meta: {
-      title: formatSeoTitle(siteTitle, siteName),
-      ogTitle: formatSeoTitle(siteTitle, siteName),
+      title: homeTitle,
+      ogTitle: homeTitle,
       ogSiteName: siteName,
       description: siteDescription,
       ogDescription: siteDescription,

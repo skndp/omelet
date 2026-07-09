@@ -27,6 +27,7 @@ import { useSiteStore } from '~/stores/store';
 
 const nuxtApp = useNuxtApp();
 const router = useRouter();
+const route = useRoute();
 const store = useSiteStore();
 
 const pageToPageLoader = ref(false);
@@ -52,7 +53,17 @@ const canonicalUrl = useCanonicalUrl();
 
 store.setGlobalSeo(seo);
 
-useSeoMeta(seo.meta);
+const seoTitle = computed(() => route.name === 'index' ? seo.homeTitle : seo.siteName);
+
+useSeoMeta({
+  title: seoTitle,
+  ogTitle: seoTitle,
+  ogSiteName: seo.siteName,
+  description: seo.siteDescription,
+  ogDescription: seo.siteDescription,
+  ogImage: seo.ogImage,
+  ogUrl: canonicalUrl
+});
 useHead({
   link: [
     {
