@@ -33,7 +33,7 @@ export function formatSeoTitle(title, siteName) {
 }
 
 export async function useSeoDefaults() {
-  const { client } = useSanity();
+  const { client } = useOmeletSanityClient();
   const runtimeConfig = useRuntimeConfig();
   const siteUrl = runtimeConfig.public.siteUrl || 'https://omelet.com';
   const fallbackOgImage = `${siteUrl.replace(/\/$/, '')}/apple-touch-icon.png`;

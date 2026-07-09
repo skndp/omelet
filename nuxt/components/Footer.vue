@@ -71,7 +71,8 @@ const siteQuery = groq`*[(_type == "site")][0]{
 
 // Async data
 const uniqKey = 'site-footer';
-const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(siteQuery));
+const sanity = useOmeletSanityClient();
+const { data } = await useAsyncData(uniqKey, () => sanity.fetch(siteQuery));
 const site = data.value;
 const social_links = ref([]);
 

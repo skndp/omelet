@@ -56,7 +56,8 @@ const homeQuery = groq`*[(_type == "home")][0]{
 
 // Async data
 const uniqKey = 'home-hero';
-const { data } = await useAsyncData(uniqKey, () => useSanity().fetch(homeQuery));
+const sanity = useOmeletSanityClient();
+const { data } = await useAsyncData(uniqKey, () => sanity.fetch(homeQuery));
 const home = data.value;
 
 // Computed

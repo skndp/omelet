@@ -73,7 +73,7 @@ import { useSiteStore } from '~/stores/store';
 const route = useRoute();
 const router = useRouter();
 const store = useSiteStore();
-const { client } = useSanity();
+const { client } = useOmeletSanityClient();
 
 const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
   title,
