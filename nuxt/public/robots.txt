@@ -1,1 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /preview/
+Disallow: /_nuxt/
+
 Sitemap: https://omelet.com/sitemap.xml

@@ -39,8 +39,14 @@ export default defineNuxtConfig({
   //
   site: {
     url: site_url,
-    name: site_name
+    name: site_name,
+    trailingSlash: true
   },
+  sitemap: {
+    // Keep the custom error page out of sitemap.xml
+    exclude: ['/404']
+  },
+  //////////////
   //
   // App
   //
