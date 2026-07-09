@@ -255,6 +255,19 @@ useSeoMeta({
 });
 
 useHead({
+  script: [
+    jsonLdScript(
+      buildWebPageJsonLd({
+        name: pageTitle,
+        description: pageDescription,
+        url: canonicalUrl.value,
+        siteName: seo.siteName,
+        siteUrl: seo.siteUrl,
+        image: pageImage
+      }),
+      `jsonld-${route.params.slug}`
+    )
+  ],
   link: [
     {
       key: 'canonical',

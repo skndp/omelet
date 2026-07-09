@@ -54,6 +54,17 @@ const canonicalUrl = useCanonicalUrl();
 store.setGlobalSeo(seo);
 
 const seoTitle = computed(() => route.name === 'index' ? seo.homeTitle : seo.siteName);
+const jsonLd = [
+  buildOrganizationJsonLd({
+    name: seo.siteName,
+    url: seo.siteUrl,
+    logo: seo.ogImage
+  }),
+  buildWebSiteJsonLd({
+    name: seo.siteName,
+    url: seo.siteUrl
+  })
+];
 
 useSeoMeta({
   title: seoTitle,
@@ -65,6 +76,7 @@ useSeoMeta({
   ogUrl: canonicalUrl
 });
 useHead({
+  script: jsonLd.map((schema, index) => jsonLdScript(schema, `jsonld-global-${index}`)),
   link: [
     {
       key: 'canonical',

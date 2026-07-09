@@ -38,6 +38,8 @@ import { smoothScrollTo } from '~/utils/smooth-scroll-to';
 const route = useRoute();
 const router = useRouter();
 const store = useSiteStore();
+const seo = await useSeoDefaults();
+const canonicalUrl = useCanonicalUrl();
 const homeQuery = groq`*[(_type == "home")][0]{
   heroVideo,
   overviewTitle,
@@ -77,6 +79,22 @@ const homeQuery = groq`*[(_type == "home")][0]{
   }
 }`;
 const pageData = await useSanityData({ query: homeQuery });
+
+useHead({
+  script: [
+    jsonLdScript(
+      buildWebPageJsonLd({
+        name: seo.homeTitle || seo.siteName,
+        description: seo.siteDescription,
+        url: canonicalUrl.value,
+        siteName: seo.siteName,
+        siteUrl: seo.siteUrl,
+        image: seo.ogImage
+      }),
+      'jsonld-home'
+    )
+  ]
+});
 
 // Page transitions
 definePageMeta({
