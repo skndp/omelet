@@ -7,7 +7,14 @@ const SEO_DEFAULTS_QUERY = `*[(_type == "site")][0]{
     title,
     description,
     image ${imageProps}
-  }
+  },
+  generalEmail,
+  businessEmail,
+  address,
+  addressLink,
+  phoneNumber,
+  linkedin,
+  instagram
 }`;
 
 function trimImageQuery(src) {
@@ -43,6 +50,7 @@ export async function useSeoDefaults() {
   const homeTitle = data.value?.seoSocial?.title || siteName;
   const siteDescription = data.value?.seoSocial?.description || '';
   const ogImage = formatOgImage(data.value?.seoSocial?.image?.src, fallbackOgImage);
+  const sameAs = [data.value?.linkedin, data.value?.instagram].filter(Boolean);
 
   return {
     siteName,
@@ -51,6 +59,14 @@ export async function useSeoDefaults() {
     siteDescription,
     ogImage,
     siteUrl,
+    generalEmail: data.value?.generalEmail || '',
+    businessEmail: data.value?.businessEmail || '',
+    address: data.value?.address || '',
+    addressLink: data.value?.addressLink || '',
+    phoneNumber: data.value?.phoneNumber || '',
+    linkedin: data.value?.linkedin || '',
+    instagram: data.value?.instagram || '',
+    sameAs,
     meta: {
       title: homeTitle,
       ogTitle: homeTitle,

@@ -48,6 +48,7 @@ const homeQuery = groq`*[(_type == "home")][0]{
   workTitle,
   caseStudies[]-> {
     title,
+    subtitle,
     slug,
     ctaTags {
       categoryTag->{ tag },
@@ -80,21 +81,88 @@ const homeQuery = groq`*[(_type == "home")][0]{
 }`;
 const pageData = await useSanityData({ query: homeQuery });
 
-useHead({
+const organizationId = `${seo.siteUrl}#organization`;
+const homeItemListId = `${canonicalUrl.value}#itemlist`;
+
+const homeWorkItems = computed(() => {
+  return (pageData.value?.caseStudies || [])
+    .filter((caseStudy) => caseStudy?.slug?.current)
+    .map((caseStudy, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'CreativeWork',
+        '@id': new URL(`/${caseStudy.slug.current}/`, seo.siteUrl).href,
+        name: caseStudy.title,
+        description: caseStudy.subtitle || caseStudy.title,
+        url: new URL(`/${caseStudy.slug.current}/`, seo.siteUrl).href
+      }
+    }));
+});
+
+const serviceSchemas = computed(() => {
+  return [pageData.value?.servicesCTA1, pageData.value?.servicesCTA2]
+    .filter(Boolean)
+    .map((cta) => buildServiceJsonLd({
+      url: cta.url,
+      name: cta.title,
+      description: cta.copy,
+      provider: {
+        '@id': organizationId
+      },
+      serviceType: cta.label
+    }));
+});
+
+const teamSchemas = computed(() => {
+  return (pageData.value?.members || [])
+    .filter((member) => member?.name)
+    .map((member, index) => buildPersonJsonLd({
+      url: `${seo.siteUrl}#team-member-${index + 1}`,
+      name: member.name,
+      jobTitle: member.title,
+      image: member.image?.src,
+      worksFor: {
+        '@id': organizationId
+      }
+    }));
+});
+
+useHead(() => ({
   script: [
     jsonLdScript(
       buildWebPageJsonLd({
+        type: 'CollectionPage',
         name: seo.homeTitle || seo.siteName,
         description: seo.siteDescription,
         url: canonicalUrl.value,
         siteName: seo.siteName,
         siteUrl: seo.siteUrl,
-        image: seo.ogImage
+        image: seo.ogImage,
+        mainEntity: {
+          '@id': homeItemListId
+        },
+        about: {
+          '@id': organizationId
+        },
+        publisher: {
+          '@id': organizationId
+        }
       }),
       'jsonld-home'
-    )
+    ),
+    jsonLdScript(
+      buildItemListJsonLd({
+        url: canonicalUrl.value,
+        name: pageData.value?.workTitle || 'Selected work',
+        itemListElement: homeWorkItems.value
+      }),
+      'jsonld-home-work'
+    ),
+    ...serviceSchemas.value.map((schema, index) => jsonLdScript(schema, `jsonld-home-service-${index}`)),
+    ...teamSchemas.value.map((schema, index) => jsonLdScript(schema, `jsonld-home-team-${index}`))
   ]
-});
+}));
 
 // Page transitions
 definePageMeta({

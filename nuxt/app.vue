@@ -58,7 +58,26 @@ const jsonLd = [
   buildOrganizationJsonLd({
     name: seo.siteName,
     url: seo.siteUrl,
-    logo: seo.ogImage
+    logo: seo.ogImage,
+    description: seo.siteDescription,
+    sameAs: seo.sameAs,
+    email: seo.generalEmail,
+    telephone: seo.phoneNumber,
+    address: seo.address,
+    contactPoint: [
+      seo.generalEmail || seo.phoneNumber ? {
+        '@type': 'ContactPoint',
+        contactType: 'general inquiries',
+        email: seo.generalEmail || undefined,
+        telephone: seo.phoneNumber || undefined
+      } : null,
+      seo.businessEmail || seo.phoneNumber ? {
+        '@type': 'ContactPoint',
+        contactType: 'business inquiries',
+        email: seo.businessEmail || undefined,
+        telephone: seo.phoneNumber || undefined
+      } : null
+    ].filter(Boolean)
   }),
   buildWebSiteJsonLd({
     name: seo.siteName,

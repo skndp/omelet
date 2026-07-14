@@ -254,8 +254,38 @@ useSeoMeta({
   ogUrl: canonicalUrl
 });
 
+const organizationId = `${seo.siteUrl}#organization`;
+const pageEntityId = `${canonicalUrl.value}#case-study`;
+
+const caseStudyAbout = computed(() => {
+  return (pageData.value?.tags || [])
+    .map((tag) => tag?.tag)
+    .filter(Boolean)
+    .map((tag) => ({
+      '@type': 'Thing',
+      name: tag
+    }));
+});
+
 useHead({
   script: [
+    jsonLdScript(
+      buildCaseStudyJsonLd({
+        url: canonicalUrl.value,
+        name: pageTitle,
+        description: pageDescription,
+        image: pageImage,
+        keywords: caseStudyAbout.value.map((tag) => tag.name).join(', '),
+        about: caseStudyAbout.value,
+        publisher: {
+          '@id': organizationId
+        },
+        mainEntityOfPage: {
+          '@id': `${canonicalUrl.value}#webpage`
+        }
+      }),
+      `jsonld-case-study-${route.params.slug}`
+    ),
     jsonLdScript(
       buildWebPageJsonLd({
         name: pageTitle,
@@ -263,7 +293,16 @@ useHead({
         url: canonicalUrl.value,
         siteName: seo.siteName,
         siteUrl: seo.siteUrl,
-        image: pageImage
+        image: pageImage,
+        mainEntity: {
+          '@id': pageEntityId
+        },
+        about: {
+          '@id': organizationId
+        },
+        publisher: {
+          '@id': organizationId
+        }
       }),
       `jsonld-${route.params.slug}`
     )
