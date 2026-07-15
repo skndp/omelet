@@ -22,6 +22,9 @@ const props = defineProps({
 });
 
 const videoAspectRatio = computed(() => getVimeoAspectRatio(props.vimeo));
+
+console.log(props.vimeo);
+
 </script>
 
 <style lang='scss'>

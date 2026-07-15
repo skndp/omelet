@@ -8,13 +8,19 @@ export function getVimeoId(vimeo) {
   return asset?.vimeoId || asset?.id || null;
 }
 
-export function getVimeoPoster(vimeo, suffix = '_1920?r=rpad') {
+export function getVimeoPoster(vimeo, { removePad = true } = {}) {
   const asset = getVimeoAsset(vimeo);
-  const baseLink = asset?.thumbnail || asset?.pictures?.base_link;
   const sizes = asset?.pictures?.sizes || [];
-  const size = sizes[sizes.length - 1] || {};
 
-  if (!baseLink) {
+  // Pick the widest available size instead of assuming array order
+  const largest = sizes.reduce(
+    (biggest, current) => (current.width > (biggest?.width || 0) ? current : biggest),
+    null
+  );
+
+  const src = largest?.link || asset?.thumbnail || '';
+
+  if (!src) {
     return {
       src: '',
       width: 0,
@@ -24,9 +30,11 @@ export function getVimeoPoster(vimeo, suffix = '_1920?r=rpad') {
   }
 
   return {
-    src: `${baseLink.replace('?r=pad', '')}${suffix}`,
-    width: size.width || 0,
-    height: size.height || 0,
+    // '&r=pad' pads to a target aspect ratio instead of cropping;
+    // strip it if you're relying on object-fit/background-size: cover
+    src: removePad ? src.replace('&r=pad', '') : src,
+    width: largest?.width || 0,
+    height: largest?.height || 0,
     alt: asset?.name || 'Vimeo video'
   };
 }
@@ -40,5 +48,5 @@ export function getVimeoAspectRatio(vimeo) {
     return '16/9';
   }
 
-  return width / height < 1 ? `${width}/${height}` : '16/9';
+  return width / height > 1 ? `${width}/${height}` : '16/9';
 }
