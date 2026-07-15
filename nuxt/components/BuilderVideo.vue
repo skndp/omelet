@@ -1,7 +1,7 @@
 <template>
   <section class="builder-video pad-bl">
     <div class="gutter">
-      <div class="video-size" :style="{'aspectRatio': (vimeo.play.source.height / vimeo.play.source.width) < 1 ? `${vimeo.play.source.width}/${vimeo.play.source.height}` : '16/9'}">
+      <div class="video-size" :style="{'aspectRatio': videoAspectRatio}">
         <VideoCover :vimeo="vimeo" :controls="controls" />
       </div>
     </div>
@@ -9,6 +9,9 @@
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { getVimeoAspectRatio } from '~/utils/vimeo';
+
 const props = defineProps({
   vimeo: {
     type: Object
@@ -17,6 +20,11 @@ const props = defineProps({
     type: Boolean
   }
 });
+
+const videoAspectRatio = computed(() => getVimeoAspectRatio(props.vimeo));
+
+console.log(props.vimeo);
+
 </script>
 
 <style lang='scss'>

@@ -5,7 +5,7 @@ import { schemaTypes } from './schemas';
 import { media } from 'sanity-plugin-media';
 import { vimeoField } from 'sanity-plugin-vimeo-field';
 
-import { EyeOpenIcon } from '@sanity/icons';
+import { EyeOpenIcon } from '@sanity/icons/EyeOpen';
 import { Iframe } from 'sanity-plugin-iframe-pane';
 
 // Singletons...
@@ -100,9 +100,7 @@ export default defineConfig({
           ])
     }),
     media(),
-    vimeoField({
-      accessToken: process.env.SANITY_STUDIO_VIMEO_ACCESS_TOKEN
-    })
+    vimeoField()
   ],
   schema: {
     types: schemaTypes,

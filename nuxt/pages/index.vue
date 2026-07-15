@@ -41,7 +41,19 @@ const store = useSiteStore();
 const seo = await useSeoDefaults();
 const canonicalUrl = useCanonicalUrl();
 const homeQuery = groq`*[(_type == "home")][0]{
-  heroVideo,
+  heroVideo {
+    vimeo {
+      asset-> {
+        vimeoId,
+        name,
+        width,
+        height,
+        "thumbnail": pictures.sizes[0].link,
+        pictures,
+        files
+      }
+    }
+  },
   overviewTitle,
   overviewSubtitle,
   overviewSubcopy,

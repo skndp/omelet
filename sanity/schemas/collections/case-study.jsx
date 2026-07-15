@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineField, defineType, defineArrayMember } from 'sanity';
-import { SlugInput } from 'sanity-plugin-prefixed-slug';
 import { ProjectsIcon, UnknownIcon } from '@sanity/icons';
+import PrefixedSlugInput from '../../components/prefixed-slug-input';
 // Sanity Icon Set: https://icons.sanity.build/all
 
 export default defineType({
@@ -54,7 +54,7 @@ export default defineType({
       title: 'Slug',
       type: 'slug',
       components: {
-        input: SlugInput,
+        input: PrefixedSlugInput,
       },
       description: 'Press "Generate" to automatically create a slug from the title above.',
       options: {
