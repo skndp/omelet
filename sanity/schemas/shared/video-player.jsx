@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineField, defineType } from 'sanity';
-import { PlayIcon } from '@sanity/icons';
+import { PlayIcon } from '@sanity/icons/Play';
 
 export default defineType({
   name: 'videoPlayer',

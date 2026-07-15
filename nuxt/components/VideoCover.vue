@@ -27,9 +27,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useSiteStore } from '~/stores/store';
 import { vueVimeoPlayer } from 'vue-vimeo-player';
+import { getVimeoAsset, getVimeoId, getVimeoPoster } from '~/utils/vimeo';
 
 defineExpose({
   carouselSlideChange
@@ -78,13 +79,9 @@ if (store.accessibility) {
 
 let player = ref();
 const wrapper = ref();
-const poster = {
-  src: props.vimeo.pictures.base_link.replace('?r=pad', '') + '_1920?r=rpad',
-  width: props.vimeo.pictures.sizes.slice(-1)[0].width,
-  height: props.vimeo.pictures.sizes.slice(-1)[0].height,
-  alt: props.vimeo.name
-}
-const vid = props.vimeo.id;
+const vimeo = computed(() => getVimeoAsset(props.vimeo));
+const poster = computed(() => getVimeoPoster(props.vimeo));
+const vid = computed(() => getVimeoId(props.vimeo));
 
 // Mounted
 onMounted(() => {
@@ -123,7 +120,9 @@ function onResize() {
 
   const wrapper_width = wrapper.value.clientWidth;
   const wrapper_height = wrapper.value.clientHeight;
-  const video_ratio = props.vimeo.play.source.width / props.vimeo.play.source.height;
+  const video_ratio = vimeo.value?.width && vimeo.value?.height
+    ? vimeo.value.width / vimeo.value.height
+    : 16 / 9;
   let new_width = wrapper_width;
   let new_height = wrapper_height;
 

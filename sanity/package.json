@@ -15,23 +15,25 @@
     "sanity"
   ],
   "dependencies": {
-    "@sanity/color-input": "^4.0.1",
-    "@sanity/vision": "^3.61.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "sanity": "^3.69.0",
-    "sanity-plugin-iframe-pane": "^3.1.6",
-    "sanity-plugin-media": "^2.3.2",
-    "sanity-plugin-prefixed-slug": "^2.0.0",
-    "sanity-plugin-vimeo-field": "^1.0.1",
-    "styled-components": "^6.1.8"
+    "@sanity/color-input": "^6.0.14",
+    "@sanity/vision": "^6.5.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "sanity": "^6.5.0",
+    "sanity-plugin-iframe-pane": "^5.0.25",
+    "sanity-plugin-media": "^6.0.1",
+    "sanity-plugin-vimeo-field": "^3.2.1",
+    "styled-components": "^6.4.3"
   },
   "devDependencies": {
-    "@sanity/eslint-config-studio": "^4.0.0",
-    "@types/react": "^18.0.25",
-    "eslint": "^8.6.0",
-    "prettier": "^3.0.2",
-    "typescript": "^5.1.6"
+    "@sanity/eslint-config-studio": "^6.0.0",
+    "@types/react": "^19.2.17",
+    "eslint": "^9.39.5",
+    "prettier": "^3.9.5",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "@sanity/icons": "4.1.0"
   },
   "prettier": {
     "semi": false,

@@ -91,7 +91,17 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
     },
     _type == 'videoLoop' => {
       'type': _type,
-      vimeo
+      vimeo {
+        asset-> {
+          vimeoId,
+          name,
+          width,
+          height,
+          "thumbnail": pictures.sizes[0].link,
+          pictures,
+          files
+        }
+      }
     }
   },
   overview {
@@ -120,11 +130,31 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
     },
     _type == 'videoLoop' => {
       'type': _type,
-      vimeo
+      vimeo {
+        asset-> {
+          vimeoId,
+          name,
+          width,
+          height,
+          "thumbnail": pictures.sizes[0].link,
+          pictures,
+          files
+        }
+      }
     },
     _type == 'videoPlayer' => {
       'type': _type,
-      vimeo
+      vimeo {
+        asset-> {
+          vimeoId,
+          name,
+          width,
+          height,
+          "thumbnail": pictures.sizes[0].link,
+          pictures,
+          files
+        }
+      }
     },
     _type == 'carousel' => {
       'type': _type,
@@ -135,11 +165,31 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
         },
         _type == 'videoLoop' => {
           'type': _type,
-          vimeo
+          vimeo {
+            asset-> {
+              vimeoId,
+              name,
+              width,
+              height,
+              "thumbnail": pictures.sizes[0].link,
+              pictures,
+              files
+            }
+          }
         },
         _type == 'videoPlayer' => {
           'type': _type,
-          vimeo
+          vimeo {
+            asset-> {
+              vimeoId,
+              name,
+              width,
+              height,
+              "thumbnail": pictures.sizes[0].link,
+              pictures,
+              files
+            }
+          }
         }
       }
     },
@@ -152,11 +202,31 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
         },
         _type == 'videoLoop' => {
           'type': _type,
-          vimeo
+          vimeo {
+            asset-> {
+              vimeoId,
+              name,
+              width,
+              height,
+              "thumbnail": pictures.sizes[0].link,
+              pictures,
+              files
+            }
+          }
         },
         _type == 'videoPlayer' => {
           'type': _type,
-          vimeo
+          vimeo {
+            asset-> {
+              vimeoId,
+              name,
+              width,
+              height,
+              "thumbnail": pictures.sizes[0].link,
+              pictures,
+              files
+            }
+          }
         }
       }
     },
@@ -169,11 +239,29 @@ const pageQuery = groq`*[_type == 'caseStudy' && slug.current == $slug][0]{
         },
         _type == 'videoLoop' => {
           'type': _type,
-          vimeo
+          vimeo {
+            asset-> {
+              vimeoId,
+              name,
+              width,
+              height,
+              pictures,
+              files
+            }
+          }
         },
         _type == 'videoPlayer' => {
           'type': _type,
-          vimeo
+          vimeo {
+            asset-> {
+              vimeoId,
+              name,
+              width,
+              height,
+              pictures,
+              files
+            }
+          }
         },
         _type == 'textColumn' => {
           'type': _type,
@@ -239,8 +327,10 @@ let pageImage = pageSeo.value?.image?.src || seo.ogImage;
 if (!pageSeo.value?.image?.src && heroMedia) {
   if (heroMedia.type === 'singleImage') {
     pageImage = heroMedia.image.src;
-  } else if (heroMedia.vimeo?.pictures?.base_link) {
-    pageImage = heroMedia.vimeo.pictures.base_link.replace('?r=pad', '') + '_1200?r=rpad';
+  } else if (heroMedia.vimeo?.asset?.thumbnail) {
+    pageImage = heroMedia.vimeo.asset.thumbnail.replace('?r=pad', '') + '_1200?r=rpad';
+  } else if (heroMedia.vimeo?.asset?.pictures?.base_link) {
+    pageImage = heroMedia.vimeo.asset.pictures.base_link.replace('?r=pad', '') + '_1200?r=rpad';
   }
 }
 
