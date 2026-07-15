@@ -1,6 +1,6 @@
 import React from 'react';
 import { defineField, defineType, defineArrayMember } from 'sanity';
-import { ProjectsIcon, UnknownIcon } from '@sanity/icons';
+import { ProjectsIcon } from '@sanity/icons';
 import PrefixedSlugInput from '../../components/prefixed-slug-input';
 // Sanity Icon Set: https://icons.sanity.build/all
 
@@ -253,23 +253,18 @@ export default defineType({
     select: {
       title: 'title',
       slug: 'slug',
-      hero: 'heroMedia'
+      hero_img: 'heroMedia.0.image.asset',
+      hero_vid: 'heroMedia.0.vimeo.asset.pictures.sizes.[1].link'
     },
-    prepare({ title, slug, hero }) {
-      let video_thumb = false,
-          new_thumb = UnknownIcon;
-
-      if (hero && hero[0].image) {
-        new_thumb = hero[0].image.asset;
-      } else if (hero && hero[0].vimeo) {
-        video_thumb = true;
-        new_thumb = hero[0].vimeo.pictures.sizes[1].link.replace('?r=pad', '') + '?r=rpad';
-      }
-
+    prepare({ title, slug, hero_img, hero_vid }) {
       return {
         title: title ? title : 'Untitled',
         subtitle: slug ? `omelet.com/${slug.current}` : 'untitled',
-        media: video_thumb ? <img src={new_thumb} alt={title} /> : new_thumb
+        media: hero_img
+          ? hero_img
+          : hero_vid
+            ? <img src={hero_vid} alt={title ? title : 'Hero video thumbnail'} />
+            : undefined
       };
     }
   }

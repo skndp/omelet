@@ -20,8 +20,8 @@ export default defineType({
   ],
   preview: {
     select: {
-      thumb: 'vimeo.pictures.sizes.[1].link',
-      title: 'vimeo.name'
+      thumb: 'vimeo.asset.pictures.sizes.[1].link',
+      title: 'vimeo.asset.name'
     },
     prepare: ({ thumb, title }) => {
       return {
