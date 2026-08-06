@@ -5,4 +5,4 @@ Disallow: /api/
 Disallow: /preview/
 Disallow: /_nuxt/
 
-Sitemap: https://omelet.com/sitemap.xml
+Sitemap: https://www.omelet.com/sitemap.xml

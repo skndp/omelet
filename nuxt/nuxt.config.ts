@@ -1,5 +1,5 @@
 const site_name = 'Omelet';
-const site_url = 'https://omelet.com';
+const site_url = 'https://www.omelet.com';
 const sanity_project_id = process.env.NUXT_SANITY_PROJECT_ID;
 const sanity_dataset = process.env.NUXT_SANITY_DATASET || 'production';
 const sanity_api_version = process.env.NUXT_SANITY_API_VERSION || '2022-03-07';

@@ -41,7 +41,7 @@ function buildCaseStudyLine(siteUrl, caseStudy) {
 
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig();
-  const siteUrl = runtimeConfig.public.siteUrl || 'https://omelet.com';
+  const siteUrl = runtimeConfig.public.siteUrl || 'https://www.omelet.com';
   const client = createClient({
     projectId: runtimeConfig.public.sanityProjectId,
     dataset: runtimeConfig.public.sanityDataset || 'production',

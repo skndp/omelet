@@ -42,7 +42,7 @@ export function formatSeoTitle(title, siteName) {
 export async function useSeoDefaults() {
   const { client } = useOmeletSanityClient();
   const runtimeConfig = useRuntimeConfig();
-  const siteUrl = runtimeConfig.public.siteUrl || 'https://omelet.com';
+  const siteUrl = runtimeConfig.public.siteUrl || 'https://www.omelet.com';
   const fallbackOgImage = `${siteUrl.replace(/\/$/, '')}/apple-touch-icon.png`;
   const { data } = await useAsyncData('seo-defaults', () => client.fetch(SEO_DEFAULTS_QUERY));
 
