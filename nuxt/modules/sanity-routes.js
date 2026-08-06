@@ -58,7 +58,7 @@ export default defineNuxtModule({
           return;
         }
 
-        routes.add(`/${slug}`);
+        routes.add(`/${slug}/`);
       });
 
       nitroConfig.prerender.routes = [...routes];

@@ -13,8 +13,8 @@
         </button>
       </nav>
       <nav id="primary-nav">
-        <NuxtLink v-for="item in site_nav" class="nav-item nav-a1" :to="`/?${item.id}`" @click.native="onClickNavItem(item.id)">{{ item.label }}</NuxtLink>
-        <NuxtLink class="icon --contact" to="/?contact" @click.native="onClickNavItem('contact')" aria-label="Contact" />
+        <NuxtLink v-for="item in site_nav" class="nav-item nav-a1" :to="withTrailingSlash(`/?${item.id}`)" @click.native="onClickNavItem(item.id)">{{ item.label }}</NuxtLink>
+        <NuxtLink class="icon --contact" :to="withTrailingSlash('/?contact')" @click.native="onClickNavItem('contact')" aria-label="Contact" />
         <button class="icon --accessibility marg-r" :class="{'--enabled': store.accessibility}" aria-label="Accessibility" @click="onClickAccessibility" />
       </nav>
     </div>
@@ -25,6 +25,7 @@
 import { ref, reactive } from 'vue';
 import { useSiteStore } from '~/stores/store';
 import { smoothScrollTo } from '~/utils/smooth-scroll-to';
+import { withTrailingSlash } from '~/utils/trailing-slash';
 
 const route = useRoute();
 const store = useSiteStore();

@@ -12,8 +12,8 @@
         </div>
       </div>
       <div v-if="getPrevSlug && getNextSlug" class="hero-controls gutter pad-b">
-        <NuxtLink class="arrow --prev" :to="getPrevSlug" />
-        <NuxtLink class="arrow --next" :to="getNextSlug" />
+        <NuxtLink class="arrow --prev" :to="withTrailingSlash(`/${getPrevSlug}`)" />
+        <NuxtLink class="arrow --next" :to="withTrailingSlash(`/${getNextSlug}`)" />
       </div>
     </div>
   </section>
@@ -22,6 +22,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useSiteStore } from '~/stores/store';
+import { withTrailingSlash } from '~/utils/trailing-slash';
 
 const route = useRoute();
 const store = useSiteStore();

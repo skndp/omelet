@@ -8,7 +8,7 @@
         v-for="(item, index) in caseStudies"
         class="list-item"
         :class="state.items[index]"
-        :to="`/${item.slug.current}`"
+        :to="withTrailingSlash(`/${item.slug.current}`)"
         @mouseenter="onMouseenterListItem($event, index)"
         @mouseleave="onMouseleaveListItem($event, index)"
         :key="index"
@@ -31,6 +31,8 @@
 </template>
 
 <script setup>
+import { withTrailingSlash } from '~/utils/trailing-slash';
+
 // Props
 const props = defineProps({
   title: {
